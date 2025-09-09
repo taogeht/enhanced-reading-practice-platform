@@ -37,6 +37,9 @@ if 'RAILWAY_STATIC_URL' in os.environ:
 if 'RAILWAY_PUBLIC_DOMAIN' in os.environ:
     ALLOWED_HOSTS.append(os.environ['RAILWAY_PUBLIC_DOMAIN'])
 
+# Add Railway health check domain
+ALLOWED_HOSTS.append('healthcheck.railway.app')
+
 
 # Application definition
 
