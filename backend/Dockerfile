@@ -4,7 +4,8 @@ FROM python:3.11-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    DEBIAN_FRONTEND=noninteractive
+    DEBIAN_FRONTEND=noninteractive \
+    PATH="/usr/local/bin:$PATH"
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -12,21 +13,25 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     curl \
     postgresql-client \
+    pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
 WORKDIR /app
 
-# Install Python dependencies
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir --upgrade pip && \
+# Copy backend requirements and install Python dependencies
+COPY backend/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
-COPY . /app/
+# Copy backend project files
+COPY backend/ /app/
 
 # Create directories for static files and media
 RUN mkdir -p /app/staticfiles /app/media /app/logs
+
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
 # Create non-root user
 RUN addgroup --system django && \
