@@ -2,6 +2,8 @@
 
 A comprehensive educational platform that leverages pre-generated TTS audio and unlimited student recording submissions to provide schools with a cost-effective, privacy-focused reading assessment solution.
 
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/taogeht/enhanced-reading-practice-platform)
+
 ## Project Structure
 
 ```
