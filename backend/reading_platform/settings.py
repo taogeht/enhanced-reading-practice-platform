@@ -26,7 +26,15 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-$ji!n@!gjv$dyum@)kyn_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
+# Railway and production hosts
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+
+# Add Railway domains automatically
+if 'RAILWAY_STATIC_URL' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['RAILWAY_STATIC_URL'].replace('https://', '').replace('http://', ''))
+
+if 'RAILWAY_PUBLIC_DOMAIN' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['RAILWAY_PUBLIC_DOMAIN'])
 
 
 # Application definition
@@ -56,6 +64,7 @@ MIDDLEWARE = [
     'security.middleware.SecurityHeadersMiddleware',
     'security.middleware.RequestValidationMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static files for Railway
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'security.middleware.CSRFExemptionMiddleware',
@@ -92,12 +101,25 @@ WSGI_APPLICATION = 'reading_platform.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import os
+import dj_database_url
+
+# Database configuration for Railway
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
+
+# Railway PostgreSQL configuration
+if 'DATABASE_URL' in os.environ:
+    DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL'])
+    DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'require',
+    }
 
 
 # Password validation
@@ -140,7 +162,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# WhiteNoise configuration for Railway
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Additional static files directories
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -258,15 +289,30 @@ LOGGING = {
     },
 }
 
-# Cache Configuration
+# Cache Configuration - Redis for Railway
+REDIS_URL = config('REDIS_URL', default='redis://127.0.0.1:6379/0')
+
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': REDIS_URL,
         'TIMEOUT': 300,  # 5 minutes default
         'OPTIONS': {
-            'MAX_ENTRIES': 1000,
-            'CULL_FREQUENCY': 3,
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
 }
+
+# Fallback to local memory cache if Redis unavailable
+if DEBUG and 'redis' not in REDIS_URL.lower():
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+            'TIMEOUT': 300,
+            'OPTIONS': {
+                'MAX_ENTRIES': 1000,
+                'CULL_FREQUENCY': 3,
+            }
+        }
+    }

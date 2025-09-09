@@ -1,0 +1,21 @@
+[phases.setup]
+nixPkgs = ["python39", "nodejs", "postgresql"]
+
+[phases.install]
+cmds = [
+  "cd backend && pip install -r requirements.txt",
+  "cd frontend && npm ci"
+]
+
+[phases.build]
+cmds = [
+  "cd frontend && npm run build",
+  "cd backend && python manage.py collectstatic --noinput"
+]
+
+[start]
+cmd = "cd backend && python manage.py migrate --noinput && gunicorn reading_platform.wsgi:application --bind 0.0.0.0:$PORT --workers 3"
+
+[variables]
+PYTHON_VERSION = "3.9"
+NODE_VERSION = "18"
