@@ -1,0 +1,21 @@
+asgiref==3.9.1
+Django==5.2.6
+django-cors-headers==4.8.0
+djangorestframework==3.16.1
+pillow==11.3.0
+psycopg2-binary==2.9.10
+python-decouple==3.8
+sqlparse==0.5.3
+
+# Railway deployment dependencies
+gunicorn==21.2.0
+whitenoise==6.6.0
+psycopg[binary,pool]==3.1.19
+redis==5.0.1
+bleach==6.1.0
+dj-database-url==2.1.0
+django-redis==5.4.0
+
+# Additional security and monitoring dependencies  
+safety==2.3.5
+psutil==5.9.6

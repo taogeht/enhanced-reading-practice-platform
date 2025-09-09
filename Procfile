@@ -1,1 +1,2 @@
-web: cd backend && python manage.py migrate --noinput && gunicorn reading_platform.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 60
+release: cd backend && python manage.py migrate --noinput && python manage.py collectstatic --noinput
+web: cd backend && gunicorn reading_platform.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 60
