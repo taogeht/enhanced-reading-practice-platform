@@ -44,7 +44,7 @@ export const BulkReports: React.FC<BulkReportsProps> = ({ classes }) => {
     const reportKey = `${report.type}_${report.class_id || 'general'}`;
     
     try {
-      setGeneratingReports(prev => new Set([...prev, reportKey]));
+      setGeneratingReports(prev => new Set([...Array.from(prev), reportKey]));
       setError('');
 
       // Create download URL with format parameter

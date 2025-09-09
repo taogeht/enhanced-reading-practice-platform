@@ -362,7 +362,7 @@ export const AdvancedAnalytics: React.FC<AdvancedAnalyticsProps> = ({ classes })
               <strong> beginner-level stories</strong> to students with average fluency below 2.5.
             </p>
             <p>
-              Advanced students (fluency > 4.0) would benefit from challenging materials.
+              Advanced students (fluency &gt; 4.0) would benefit from challenging materials.
             </p>
           </div>
         </div>

@@ -6,7 +6,7 @@ import { ClassListItem, StoryListItem, Recording } from '../types';
 import { classAPI, storiesAPI, recordingsAPI } from '../services/api';
 import { ClassManagement } from './ClassManagement';
 import { AssignmentCreation } from './AssignmentCreation';
-import { RecordingReview } from './RecordingReview';
+import { RecordingReviewComponent } from './RecordingReview';
 import { TeacherAnalytics } from './TeacherAnalytics';
 import { BulkAudioGeneration } from './BulkAudioGeneration';
 import { AdvancedAnalytics } from './AdvancedAnalytics';
@@ -232,7 +232,7 @@ export const TeacherDashboard: React.FC = () => {
         )}
 
         {activeTab === 'recordings' && (
-          <RecordingReview />
+          <RecordingReviewComponent />
         )}
 
         {activeTab === 'analytics' && (

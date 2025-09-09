@@ -7,7 +7,6 @@ import {
   StoryListItem,
   StudentAssignment,
   Recording,
-  RecordingReview,
   LoginCredentials,
   LoginResponse,
   ApiResponse,
@@ -84,6 +83,11 @@ export const assignmentsAPI = {
     const response = await api.post('/assignments/join/', { assignment_code: assignmentCode });
     return response.data;
   },
+
+  getAssignments: async (): Promise<ApiResponse<any>> => {
+    const response = await api.get('/assignments/');
+    return response.data;
+  },
 };
 
 // Recordings API
@@ -108,7 +112,7 @@ export const recordingsAPI = {
     return response.data;
   },
 
-  submitReview: async (recordingId: number, reviewData: RecordingReview): Promise<{ message: string }> => {
+  submitReview: async (recordingId: number, reviewData: any): Promise<{ message: string }> => {
     const response = await api.post(`/recordings/${recordingId}/review/`, reviewData);
     return response.data;
   },

@@ -10,6 +10,7 @@ export interface User {
   grade_level?: string;
   school?: string;
   date_joined: string;
+  is_admin?: boolean;
 }
 
 export interface Story {
@@ -77,7 +78,7 @@ export interface Recording {
   teacher_feedback?: string;
   duration: number | string;
   audio_file?: string;
-  attempt_number: number;
+  attempt_number?: number;
   fluency_score?: number;
   accuracy_score?: number;
   created_at: string;

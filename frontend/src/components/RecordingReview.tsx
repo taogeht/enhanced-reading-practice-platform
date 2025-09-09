@@ -1,10 +1,10 @@
 // Recording Review component for teachers - Phase 2
 
 import React, { useState, useEffect } from 'react';
-import { Recording, RecordingReview } from '../types';
+import { Recording } from '../types';
 import { recordingsAPI } from '../services/api';
 
-export const RecordingReview: React.FC = () => {
+export const RecordingReviewComponent: React.FC = () => {
   const [recordings, setRecordings] = useState<Recording[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

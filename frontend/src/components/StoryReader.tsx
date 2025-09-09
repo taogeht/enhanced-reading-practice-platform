@@ -121,7 +121,7 @@ export const StoryReader: React.FC<StoryReaderProps> = ({ story, assignment, onC
             <select 
               id="voice-select"
               value={selectedVoice} 
-              onChange={(e) => setSelectedVoice(e.target.value)}
+              onChange={(e) => setSelectedVoice(e.target.value as 'female_1' | 'female_2' | 'male_1' | 'male_2')}
             >
               {availableVoices.map((voice) => (
                 <option key={voice.value} value={voice.value}>
